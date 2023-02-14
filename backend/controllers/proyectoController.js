@@ -1,7 +1,9 @@
 import Proyecto from "../models/Proyecto.js";
 
 const obtenerProyectos = async (req, res) => {
-    
+    const proyectos = await Proyecto.find().where('creador').equals(req.usuario); //Obtengo los proyectos creados por ese usuario, que tiene que estar previamente autenticado
+
+    res.json(proyectos);
 }
 
 const obtenerProyecto = async (req, res) => {
