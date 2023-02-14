@@ -33,5 +33,18 @@ const usuarioSchema = mongoose.Schema({
     }
 )
 
+usuarioSchema.pre('save', async function(next) {
+    
+    //Si el usuario edita su email, su nombre u otro campo, no va hashear nuevamente la contraseña que previamente fue hasheada en el momento de la creacion
+
+    if(!this.isModified("password")){
+        next() //Express tiene la function next() para mandarte al siguiente middleware
+    }
+
+    //Entre más salt se le ponga más segura será, pero ocupará más recursos del servidor
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+})
+
 const Usuario = mongoose.model("Usuario", usuarioSchema)
 export default Usuario;
