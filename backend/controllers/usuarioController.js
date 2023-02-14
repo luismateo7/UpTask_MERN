@@ -94,4 +94,17 @@ const { email } = req.body;
     }
 }
 
-export { registrar, autenticar, confirmar, olvidePassword }
+const comprobarToken = async (req, res)=>{
+    const { token } = req.params;
+    const tokenValido = await Usuario.findOne( { token });
+    
+    if(tokenValido){ 
+        res.json({ msg: 'Token válido y el Usuario existe' });
+    }
+    else{ 
+        const error = new Error('TOKEN NO VÁLIDO');
+        return res.status(404).json({ msg:  error.message });
+    }
+}
+
+export { registrar, autenticar, confirmar, olvidePassword, comprobarToken }
