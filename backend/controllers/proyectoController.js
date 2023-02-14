@@ -7,7 +7,20 @@ const obtenerProyectos = async (req, res) => {
 }
 
 const obtenerProyecto = async (req, res) => {
+    const { id } = req.params; //El usuario obtiene el proyecto por el id del Proyecto si esque esta autenticado
+    const proyecto = await Proyecto.findById(id);
 
+    if(!proyecto){
+        const error = new Error("Proyecto no encontrado")
+        return res.status(404).json({ msg: error.message})
+    }
+
+    if(proyecto.creador.toString() !== req.usuario._id.toString()){
+        const error = new Error("No tienes los permisos para acceder a este proyecto")
+        return res.status(401).json({ msg: error.message})
+    }
+
+    res.json(proyecto);
 }
 
 const nuevoProyecto = async (req, res) => {
