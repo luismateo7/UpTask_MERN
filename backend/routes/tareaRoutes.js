@@ -20,3 +20,5 @@ router
     .delete(checkAuth, eliminarTarea)
 
 router.post('/estado/:id', checkAuth, cambiarEstado)
+
+export default router;
