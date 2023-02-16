@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import axios from "axios"
 
 import Alerta from "../components/Alerta";
 
@@ -12,7 +13,7 @@ export default function Registrar() {
   
   const [ alerta, setAlerta ] = useState({})
 
-  const handleSubmit = e =>{
+  const handleSubmit = async e =>{
     e.preventDefault();
 
     setAlerta({})
@@ -39,6 +40,29 @@ export default function Registrar() {
         error: true
       })
       return
+    }
+
+    //Crear el usuario en la API
+    try {
+      //Accedo directamente al req.body gracias al destructuring a data
+      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/usuarios`, { nombre, email, password }); 
+
+      setAlerta({
+        msg: data.msg,
+        error: false
+      })
+
+      //Limpiando el formulario
+      setNombre('');
+      setEmail('');
+      setPassword('');
+      setRepetirPassword('');
+
+    } catch (error) {
+      setAlerta({
+        msg: error.response.data.msg,
+        error: true
+      })
     }
 
   }
