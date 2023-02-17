@@ -1,13 +1,50 @@
-import { Link } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { Link, useParams } from "react-router-dom"
+import axios from "axios"
+import Alerta from "../components/Alerta"
 
 export default function NuevoPassword() {
+
+  const [ alerta, setAlerta ] = useState({});
+  const [ tokenValido, setTokenValido ] = useState(false);
+
+  const params = useParams();
+  const { token } = params;
+
+  useEffect(()=>{
+    const comprobarToken = async () =>{
+      try {
+        const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/usuarios/olvide-password/${token}`);
+
+        setTokenValido(true)
+
+        setAlerta({
+          msg: data.msg,
+          error: false
+        })
+
+      } catch (error) {
+        setAlerta({
+          msg: error.response.data.msg,
+          error: true
+        })
+      }
+    }
+    return ()=> {comprobarToken()}
+  }, [])
+
+  const { msg } = alerta;
+
   return (
     <>
       <h1 className="text-sky-600 font-black text-6xl capitalize">Reestable tu password y no pierdas acceso a tus
         <span className="text-slate-700"> proyectos</span>
       </h1>
 
-      <form className="my-10 bg-white shadow rounded-lg py-5 px-10">
+      { msg && <Alerta alerta={alerta}/>}
+
+      { tokenValido && (
+        <form className="my-10 bg-white shadow rounded-lg py-5 px-10">
         
         <div className="my-5">
           <label
@@ -44,6 +81,8 @@ export default function NuevoPassword() {
         />
 
       </form>
+
+    )}
 
       <nav className="lg:flex lg:justify-between">
         <Link
