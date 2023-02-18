@@ -6,11 +6,13 @@ import useAuth from "../hooks/useAuth"
 
 export default function Login() {
 
+  const { auth ,setAuth } = useAuth();
+  const navigate = useNavigate();
+  if(auth) navigate("/proyectos")
+
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
   const [ alerta, setAlerta ] = useState({});
-
-  const { setAuth } = useAuth();
 
   const handleSubmit = async e =>{
     e.preventDefault();
