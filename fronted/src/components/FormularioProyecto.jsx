@@ -1,17 +1,56 @@
 import { useState } from "react"
 
+import useProyectos from "../hooks/useProyectos";
+
+import Alerta from "./Alerta";
+
 export default function FormularioProyecto() {
 
     const [ nombre, setNombre ] = useState('');
     const [ descripcion, setDescripcion ] = useState('');
     const [ fechaEntrega, setFechaEntrega ] = useState('');
     const [ cliente, setCliente ] = useState('');
+    const [ alerta, setAlerta ] = useState({})
+
+    const { submitProyecto } = useProyectos();
+
+    const handleSubmit = async e =>{
+        e.preventDefault();
+        setAlerta({})
+
+        if([ nombre, descripcion, fechaEntrega, cliente].includes('')){
+            setAlerta({
+                msg: 'Todos los campos son obligatorios',
+                error: true
+            })
+            return
+        }
+
+        //Pasar los datos hacia el Provider
+        await submitProyecto({ nombre, descripcion, fechaEntrega, cliente })
+        setAlerta({
+            msg: 'Proyecto creado correctamente',
+            error: false
+        })
+
+        //Reset Formulario
+        setNombre('');
+        setDescripcion('');
+        setFechaEntrega('');
+        setCliente('');
+    }
+
+    const { msg } = alerta;
         
     return (
         <form
-            className="bg-white py-10 px-5 md:w-1/2 rounded-lg"
+            className="bg-white pt-5 pb-10 px-5 md:w-1/2 rounded-lg"
+            onSubmit={handleSubmit}
         >
-            <div className="mb-5">
+
+            { msg && <Alerta alerta={alerta}/>}
+
+            <div className="mb-5 mt-5">
 
                 <label
                     htmlFor="nombre"
