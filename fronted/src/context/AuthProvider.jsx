@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -6,13 +7,19 @@ const AuthContext = createContext();
 const AuthProvider = ({children})=>{
 
     const [ auth, setAuth ] = useState({});
+    const [ cargando, setCargando ] = useState(true);
+
+    const navigate = useNavigate();
 
     useEffect(()=>{
         const autenticarUsuario = async ()=>{
             const token = localStorage.getItem('token');
 
-            if(!token) return;
-
+            if(!token){
+                setCargando(false)
+                return;
+            }
+            
             const config = {
                 headers: {
                     "Content-Type": "application/json",
@@ -21,12 +28,14 @@ const AuthProvider = ({children})=>{
             }
 
             try {
-                const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/usuarios/perfil`, config)
-
+                const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/usuarios/perfil`, config);
                 setAuth(data);
+                navigate('/proyectos')
             } catch (error) {
-                
+                setAuth({})
             }
+
+            setCargando(false)
         }
         
         autenticarUsuario()
@@ -36,7 +45,8 @@ const AuthProvider = ({children})=>{
         <AuthContext.Provider
             value={{
                 auth,
-                setAuth
+                setAuth,
+                cargando
             }}
         >
             {children}
