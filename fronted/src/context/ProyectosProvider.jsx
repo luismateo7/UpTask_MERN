@@ -8,6 +8,8 @@ const ProyectosProvider = ({children}) =>{
 
     const navigate = useNavigate();
     const [ proyectos, setProyectos ] = useState([]);
+    const [ proyecto, setProyecto ] = useState({});
+    const [ cargando, setCargando ] = useState(true);
 
     const token = localStorage.getItem('token');
     
@@ -47,11 +49,26 @@ const ProyectosProvider = ({children}) =>{
         }
     }
 
+    const obtenerProyecto = async id =>{
+        setCargando(true);
+        try {
+            if(!token) return
+            const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/${id}`, config);
+            setProyecto(data);
+        } catch (error) {
+            console.log(error);
+        }
+        setCargando(false);
+    }
+
     return(
         <ProyectosContext.Provider
             value={{
                 proyectos,
-                submitProyecto
+                submitProyecto,
+                obtenerProyecto,
+                proyecto,
+                cargando
             }}
         >
             {children}
