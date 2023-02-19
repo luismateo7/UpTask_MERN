@@ -10,6 +10,7 @@ const ProyectosProvider = ({children}) =>{
     const [ proyectos, setProyectos ] = useState([]);
     const [ proyecto, setProyecto ] = useState({});
     const [ cargando, setCargando ] = useState(true);
+    const [ modalFomularioTarea, setmodalFomularioTarea ] = useState(false);
 
     const token = localStorage.getItem('token');
     
@@ -92,6 +93,22 @@ const ProyectosProvider = ({children}) =>{
         }
     }
 
+    const handleModalTarea = ()=>{
+        setmodalFomularioTarea(!modalFomularioTarea);
+    }
+
+    const submitTarea = async tarea =>{
+        try {
+            if(!token) return
+            
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/tareas`, tarea, config);
+            console.log(data);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return(
         <ProyectosContext.Provider
             value={{
@@ -101,7 +118,10 @@ const ProyectosProvider = ({children}) =>{
                 obtenerProyecto,
                 proyecto,
                 cargando,
-                eliminarProyecto
+                eliminarProyecto,
+                modalFomularioTarea,
+                handleModalTarea,
+                submitTarea
             }}
         >
             {children}
