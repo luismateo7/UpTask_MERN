@@ -8,7 +8,7 @@ export default function Login() {
 
   const { auth ,setAuth } = useAuth();
   const navigate = useNavigate();
-  if(auth) navigate("/proyectos")
+  if(auth._id) navigate("/proyectos")
 
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
