@@ -1,7 +1,6 @@
-import { useState } from "react"
-
+import { useState, useEffect } from "react"
+import { useParams } from "react-router-dom";
 import useProyectos from "../hooks/useProyectos";
-
 import Alerta from "./Alerta";
 
 export default function FormularioProyecto() {
@@ -11,12 +10,24 @@ export default function FormularioProyecto() {
     const [ fechaEntrega, setFechaEntrega ] = useState('');
     const [ cliente, setCliente ] = useState('');
     const [ alerta, setAlerta ] = useState({})
+    const [ id, setId ] = useState(null);
 
-    const { submitProyecto } = useProyectos();
+    const params = useParams();
+
+    const { submitProyecto, proyecto } = useProyectos();
+
+    useEffect(()=>{
+        if(params.id){
+            setNombre(proyecto.proyecto?.nombre);
+            setDescripcion(proyecto.proyecto?.descripcion);
+            setFechaEntrega(proyecto.proyecto?.fechaEntrega.split('T')[0]);
+            setCliente(proyecto.proyecto?.cliente);
+            setId(params.id);
+        }
+    }, [params])
 
     const handleSubmit = async e =>{
         e.preventDefault();
-        setAlerta({})
 
         if([ nombre, descripcion, fechaEntrega, cliente].includes('')){
             setAlerta({
@@ -27,13 +38,23 @@ export default function FormularioProyecto() {
         }
 
         //Pasar los datos hacia el Provider
-        await submitProyecto({ nombre, descripcion, fechaEntrega, cliente })
-        setAlerta({
-            msg: 'Proyecto creado correctamente',
-            error: false
-        })
+        await submitProyecto({ id, nombre, descripcion, fechaEntrega, cliente })
+
+        if(params.id){
+            setAlerta({
+                msg: 'Proyecto actualizado correctamente',
+                error: false
+            })
+        }
+        else{
+            setAlerta({
+                msg: 'Proyecto creado correctamente',
+                error: false
+            })
+        }
 
         //Reset Formulario
+        setId(null);
         setNombre('');
         setDescripcion('');
         setFechaEntrega('');
@@ -119,7 +140,7 @@ export default function FormularioProyecto() {
 
             <input 
                 type="submit"
-                value="Crear Proyecto"
+                value={`${params.id ? 'Actualizar Proyeco' : 'Crear Proyecto'}`}
                 className="bg-sky-600 text-center uppercase text-white w-full font-bold p-3 cursor-pointer hover:bg-sky-700 transition-colors"
             />
         </form>
