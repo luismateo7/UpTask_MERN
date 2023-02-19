@@ -20,20 +20,17 @@ const ProyectosProvider = ({children}) =>{
         }
     }
 
-    useEffect(()=>{
-        const obtenerProyectos = async ()=>{
-            try {
-                if(!token) return
+    const obtenerProyectos = async ()=>{
+        try {
+            if(!token) return
 
-                const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos`, config);
-                setProyectos(data);
-                
-            } catch (error) {
-                console.log(error)
-            }
+            const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos`, config);
+            setProyectos(data);
+            
+        } catch (error) {
+            console.log(error)
         }
-        obtenerProyectos()
-    }, [])
+    }
 
     const submitProyecto = async proyecto =>{
         try {
@@ -76,14 +73,35 @@ const ProyectosProvider = ({children}) =>{
         setCargando(false);
     }
 
+    const eliminarProyecto = async id =>{
+        try {
+            if(!token) return
+            
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/${id}`, config);
+
+            //Sincronizar State
+            const proyectosActualizados = proyectos.filter( proyectoState => proyectoState._id !== id)
+            setProyectos(proyectosActualizados)
+
+            setTimeout(()=>{
+                navigate('/proyectos')
+            }, 1500)
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return(
         <ProyectosContext.Provider
             value={{
                 proyectos,
+                obtenerProyectos,
                 submitProyecto,
                 obtenerProyecto,
                 proyecto,
-                cargando
+                cargando,
+                eliminarProyecto
             }}
         >
             {children}
