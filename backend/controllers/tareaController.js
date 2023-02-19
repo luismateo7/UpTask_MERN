@@ -18,6 +18,11 @@ const agregarTarea = async (req, res) => {
 
     try {
         const tareaAlmacenada = await Tarea.create(req.body);
+
+        //Almacenar el ID en el proyecto
+        existeProyecto.tareas.push(tareaAlmacenada._id); //Si ya paso las validaciones que si existe el proyecto entonces a ese proyecto encontrado se le agrega al arrelgo de tareas el id de la tarea creada
+        await existeProyecto.save()
+
         res.json(tareaAlmacenada)
     } catch (error) {
         console.log(error)
