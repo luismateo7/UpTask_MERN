@@ -1,9 +1,14 @@
+import { useEffect } from "react";
 import useProyectos from "../hooks/useProyectos"
 import PreviewProyecto from "../components/PreviewProyecto";
 
 export default function Proyectos() {
 
-  const { proyectos } = useProyectos();
+  const { proyectos, obtenerProyectos } = useProyectos();
+
+  useEffect(()=>{
+    obtenerProyectos()
+  }, [])
 
   return (
     <>
