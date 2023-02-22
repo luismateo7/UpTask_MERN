@@ -2,14 +2,19 @@ import Proyecto from "../models/Proyecto.js";
 import Tarea from "../models/Tarea.js"
 
 const obtenerProyectos = async (req, res) => {
-    const proyectos = await Proyecto.find().where('creador').equals(req.usuario); //Obtengo los proyectos creados por ese usuario, que tiene que estar previamente autenticado
+    //Obtengo los proyectos creados por ese usuario, que tiene que estar previamente autenticado
+    const proyectos = await Proyecto.find()
+        .where('creador')
+        .equals(req.usuario)
+        .select("-tareas");  //No necesito que me carguen las tareas cuando solo pido los proyectos
 
     res.json(proyectos);
 }
 
 const obtenerProyecto = async (req, res) => {
     const { id } = req.params; //El usuario obtiene el proyecto por el id del Proyecto si esque esta autenticado
-    const proyecto = await Proyecto.findById(id);
+    
+    const proyecto = await Proyecto.findById(id)
 
     if(!proyecto){
         const error = new Error("Proyecto no encontrado")
