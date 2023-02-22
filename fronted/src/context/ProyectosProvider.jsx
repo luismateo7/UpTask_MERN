@@ -102,7 +102,13 @@ const ProyectosProvider = ({children}) =>{
             if(!token) return
             
             const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/tareas`, tarea, config);
-            console.log(data);
+            
+            //Agrega la tarea al state 
+            const proyectoActualizado = { ...proyecto }
+            proyectoActualizado.tareas = [ ...proyectoActualizado.tareas, data]
+            setProyecto(proyectoActualizado)
+
+            setmodalFomularioTarea(false) //Cerrar el formulario cuando añado la tarea
 
         } catch (error) {
             console.log(error);
