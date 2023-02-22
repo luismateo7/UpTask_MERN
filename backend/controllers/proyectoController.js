@@ -14,7 +14,7 @@ const obtenerProyectos = async (req, res) => {
 const obtenerProyecto = async (req, res) => {
     const { id } = req.params; //El usuario obtiene el proyecto por el id del Proyecto si esque esta autenticado
     
-    const proyecto = await Proyecto.findById(id)
+    const proyecto = await Proyecto.findById(id).populate("tareas");
 
     if(!proyecto){
         const error = new Error("Proyecto no encontrado")
