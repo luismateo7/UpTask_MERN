@@ -1,10 +1,15 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
+import useAuth from "../hooks/useAuth"
 
 import Alerta from "../components/Alerta";
 
 export default function Registrar() {
+
+  const { auth } = useAuth();
+  const navigate = useNavigate();
+  if(auth._id) navigate("/proyectos")
 
   const [ nombre, setNombre ] = useState('');
   const [ email, setEmail ] = useState('');
