@@ -11,6 +11,7 @@ const ProyectosProvider = ({children}) =>{
     const [ proyecto, setProyecto ] = useState({});
     const [ cargando, setCargando ] = useState(true);
     const [ modalFomularioTarea, setmodalFomularioTarea ] = useState(false);
+    const [ tarea, setTarea ] = useState({});
 
     const token = localStorage.getItem('token');
     
@@ -98,21 +99,53 @@ const ProyectosProvider = ({children}) =>{
     }
 
     const submitTarea = async tarea =>{
-        try {
-            if(!token) return
-            
-            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/tareas`, tarea, config);
-            
-            //Agrega la tarea al state 
-            const proyectoActualizado = { ...proyecto }
-            proyectoActualizado.tareas = [ ...proyectoActualizado.tareas, data]
-            setProyecto(proyectoActualizado)
-
-            setmodalFomularioTarea(false) //Cerrar el formulario cuando añado la tarea
-
-        } catch (error) {
-            console.log(error);
+        const crearTarea =  async tarea =>{
+            try {
+                if(!token) return
+                
+                const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/tareas`, tarea, config);
+                
+                //Agrega la tarea al state 
+                const proyectoActualizado = { ...proyecto }
+                proyectoActualizado.tareas = [ ...proyectoActualizado.tareas, data]
+                setProyecto(proyectoActualizado)
+    
+                setmodalFomularioTarea(false) //Cerrar el formulario cuando añado la tarea
+    
+            } catch (error) {
+                console.log(error);
+            }
         }
+
+        const editarTarea = async tarea =>{
+            try {
+                if(!token) return
+                
+                const { data } = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/tareas/${tarea.id}`, tarea, config);
+
+                //Actualizar el DOM
+                const proyectoActualizado = { ...proyecto};
+                proyectoActualizado.tareas = proyectoActualizado.tareas.map( tareaState => {
+                    if(tareaState._id === data._id){
+                        tareaState = data
+                    }
+                    return tareaState
+                })
+                setProyecto(proyectoActualizado);
+
+                setmodalFomularioTarea(false);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        if(tarea?.id) await editarTarea(tarea);
+        else await crearTarea(tarea)
+    }
+
+    const handleModalEditarTarea = tarea => {
+        setTarea(tarea);
+        setmodalFomularioTarea(true);
     }
 
     return(
@@ -127,7 +160,10 @@ const ProyectosProvider = ({children}) =>{
                 eliminarProyecto,
                 modalFomularioTarea,
                 handleModalTarea,
-                submitTarea
+                submitTarea,
+                setTarea,
+                tarea,
+                handleModalEditarTarea
             }}
         >
             {children}
