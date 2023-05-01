@@ -4,7 +4,7 @@ import { formatearFecha } from "../../helpers/formatearFecha";
 export default function Tarea({tarea}) {
 
   const { descripcion, nombre, prioridad, fechaEntrega, _id: id, estado} = tarea;
-  const { handleModalEditarTarea } = useProyectos();
+  const { handleModalEditarTarea, handleModalEliminarTarea } = useProyectos();
 
   return (
     <div className="border-b p-5 flex justify-between">
@@ -33,6 +33,7 @@ export default function Tarea({tarea}) {
 
         <button
           className="bg-red-600 px-4 py-3 text-white uppercase font-bolf text-sm rounded-lg"
+          onClick={()=> handleModalEliminarTarea(tarea)}
         >Eliminar</button>
       </div>
       <div></div>
