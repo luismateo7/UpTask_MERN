@@ -12,6 +12,8 @@ const ProyectosProvider = ({children}) =>{
     const [ cargando, setCargando ] = useState(true);
     const [ modalFomularioTarea, setmodalFomularioTarea ] = useState(false);
     const [ tarea, setTarea ] = useState({});
+    const [ modalEliminarTarea, setModalEliminarTarea] = useState(false);
+    const [ alerta, setAlerta ] = useState({});
 
     const token = localStorage.getItem('token');
     
@@ -148,6 +150,32 @@ const ProyectosProvider = ({children}) =>{
         setmodalFomularioTarea(true);
     }
 
+    const handleModalEliminarTarea = tarea => {
+        setTarea(tarea);
+        setModalEliminarTarea(!modalEliminarTarea)
+    }
+
+    const eliminarTarea = async () => {
+        try {
+            if(!token) return
+            const { data } = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/tareas/${tarea._id}`, config);
+            setAlerta(data);
+
+            //Actualizar el DOM
+            const proyectoActualizado = { ...proyecto};
+            proyectoActualizado.tareas = proyectoActualizado.tareas.filter( tareaState => tareaState._id !== tarea._id )
+            setProyecto(proyectoActualizado);
+
+            setTimeout(()=>{
+                setAlerta({});
+            }, 2500)
+
+            setModalEliminarTarea(false);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return(
         <ProyectosContext.Provider
             value={{
@@ -163,7 +191,11 @@ const ProyectosProvider = ({children}) =>{
                 submitTarea,
                 setTarea,
                 tarea,
-                handleModalEditarTarea
+                handleModalEditarTarea,
+                modalEliminarTarea,
+                handleModalEliminarTarea,
+                eliminarTarea,
+                alerta
             }}
         >
             {children}
