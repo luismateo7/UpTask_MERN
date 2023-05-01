@@ -9,12 +9,32 @@ const PRIORIDAD = ['Baja', 'Media', 'Alta'];
 
 const ModalFormularioTarea = () => {
 
-    const { handleModalTarea, modalFomularioTarea, submitTarea } = useProyectos();
+    const { tarea, handleModalTarea, modalFomularioTarea, submitTarea, setTarea } = useProyectos();
+
+    useEffect(()=>{
+        if(tarea?._id){
+            setNombre(tarea?.nombre);
+            setDescripcion(tarea?.descripcion);
+            setPrioridad(tarea?.prioridad)
+            setFechaEntrega(tarea?.fechaEntrega?.split('T')[0]);
+            setId(tarea?._id);
+            return
+        }
+
+        //Limpiar el state
+        setAlerta({});
+        setNombre('');
+        setDescripcion('');
+        setPrioridad('');
+        setFechaEntrega('');
+        setId('');
+    }, [tarea])
 
     const [ nombre, setNombre ] = useState('');
     const [ descripcion, setDescripcion ] = useState('');
     const [ prioridad, setPrioridad ] = useState('');
     const [ fechaEntrega, setFechaEntrega ] = useState('');
+    const [ id, setId ] = useState('');
 
     const [ alerta, setAlerta ] = useState({});
 
@@ -31,14 +51,27 @@ const ModalFormularioTarea = () => {
             return
         }
 
-        await submitTarea({ nombre, descripcion, fechaEntrega, prioridad, proyecto: params.id })
+        await submitTarea({ id, nombre, descripcion, fechaEntrega, prioridad, proyecto: params.id })
+        
+        //Limpiar el state
+        setAlerta({});
+        setNombre('');
+        setDescripcion('');
+        setPrioridad('');
+        setFechaEntrega('');
+        setId('');
     }
  
     const { msg } = alerta;
 
+    const handleCerrarTarea = ()=>{
+        handleModalTarea()
+        setTarea({});
+    }
+
     return (
         <Transition.Root show={ modalFomularioTarea } as={Fragment}>
-            <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={ handleModalTarea }>
+            <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={ handleCerrarTarea }>
                 <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                     <Transition.Child
                         as={Fragment}
@@ -75,7 +108,7 @@ const ModalFormularioTarea = () => {
                                 <button
                                     type="button"
                                     className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    onClick={ handleModalTarea }
+                                    onClick={ handleCerrarTarea }
                                 >
                                 <span className="sr-only">Cerrar</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -88,7 +121,7 @@ const ModalFormularioTarea = () => {
                             <div className="sm:flex sm:items-start">
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                                     <Dialog.Title as="h1" className="text-4xl leading-6 font-bold text-gray-900">
-                                        Crear tarea
+                                        { tarea?._id ? 'Editar Tarea' : 'Crear tarea' }
                                     </Dialog.Title>
 
                                     { msg && <Alerta alerta={alerta}/>}
@@ -169,7 +202,7 @@ const ModalFormularioTarea = () => {
                                         <input 
                                             type='submit'
                                             className='bg-sky-600 hover:bg-sky-700 font-bold cursor-pointer text-white uppercase transition-colors rounded p-3 w-full'
-                                            value='Crear Tarea'
+                                            value={ tarea?._id ? 'Guardar Cambios' : 'Crear Tarea' }
                                         />
                                     </form>
                                 </div>
