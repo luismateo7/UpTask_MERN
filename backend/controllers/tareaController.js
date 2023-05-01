@@ -65,7 +65,7 @@ const actualizarTarea = async (req, res) => {
     tarea.nombre = req.body.nombre || proyecto.nombre;
     tarea.descripcion = req.body.descripcion || tarea.descripcion;
     tarea.fechaEntrega = req.body.fechaEntrega || tarea.fechaEntrega;
-    tarea.cliente = req.body.cliente || tarea.cliente;
+    tarea.prioridad = req.body.prioridad || tarea.prioridad;
 
     try {
         const tareaAlmacenada = await tarea.save()
