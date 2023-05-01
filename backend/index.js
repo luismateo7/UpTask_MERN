@@ -14,7 +14,7 @@ dotenv.config()
 conectarDB()
 
 //Configurar CORS
-const whiteList = [process.env.FRONTED_URL]; //Fronted permitidos
+const whiteList = [process.env.FRONTED_URL, "http://localhost:5173"]; //Fronted permitidos
 
 const corsOption = {
     origin: function(origin, callback){ //El origin detecta que fronted esta realizando la peticion
