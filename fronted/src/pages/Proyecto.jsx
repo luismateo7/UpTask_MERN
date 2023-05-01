@@ -3,15 +3,24 @@ import { useParams, Link } from "react-router-dom"
 import useProyectos from "../hooks/useProyectos";
 import ModalFormularioTarea from "../components/ModalFormularioTarea";
 import Tarea from "../components/Tarea";
+import ModalEliminarTarea from "../components/ModalEliminarTarea";
+import Alerta from "../components/Alerta";
 
 export default function Proyecto() {
 
     const params = useParams();
-    const { obtenerProyecto, proyecto, cargando, handleModalTarea } = useProyectos();
+    const { obtenerProyecto, proyecto, cargando, handleModalTarea, setTarea, alerta } = useProyectos();
     
     useEffect(()=>{
         obtenerProyecto(params.id);
     }, [])
+
+    const handleNuevaTarea = ()=>{
+      setTarea({});
+      handleModalTarea();
+    }
+
+    const { msg } = alerta; 
 
     return (
         <div>
@@ -39,7 +48,7 @@ export default function Proyecto() {
               </div>
 
               <button
-                onClick={ handleModalTarea }
+                onClick={ handleNuevaTarea }
                 type="button"
                 className="text-sm px-5 py-3 w-full md:w-auto rounded-lg uppercase bg-sky-400 text-white text-center font-bold mt-5 flex gap-2 hover:bg-sky-600 justify-center"
               >
@@ -50,6 +59,12 @@ export default function Proyecto() {
               </button>
 
               <p className="font-bold text-xl mt-10">Tareas del Proyecto</p>
+
+              { msg && (
+                <div className="m-auto w-full md:w-1/3 lg:w-2/4">
+                  <Alerta alerta={alerta} />
+                </div>
+              ) }
 
               <div className="bg-white shadow mt-10 rounded-lg p-3">
                 {proyecto?.tareas?.length ? 
@@ -63,6 +78,7 @@ export default function Proyecto() {
               </div>
 
               <ModalFormularioTarea />
+              <ModalEliminarTarea />
             </>
           )}
         </div>
