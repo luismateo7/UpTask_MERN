@@ -1,5 +1,6 @@
 import Proyecto from "../models/Proyecto.js";
 import Tarea from "../models/Tarea.js"
+import Usuario from "../models/Usuarios.js";
 
 const obtenerProyectos = async (req, res) => {
     //Obtengo los proyectos creados por ese usuario, que tiene que estar previamente autenticado
@@ -94,7 +95,18 @@ const eliminarProyecto = async (req, res) => {
     }
 }
 
-const agregarColaborador = async (req, res) => {
+const buscarColaborador = async (req, res) => {
+    const { email } = req.body
+    const usuario = await Usuario.findOne({ email }).select('email nombre _id')
+
+    if(!usuario){
+        const error = new Error('Usuario no encontrado')
+        return res.status(404).json({msg: error.message})
+    }
+    res.status(200).json(usuario);
+}
+
+const agregarColaborador = async (req, res) => {    
 
 }
 
@@ -108,6 +120,7 @@ export{
     nuevoProyecto,
     editarProyecto,
     eliminarProyecto,
+    buscarColaborador,
     agregarColaborador,
     eliminarColaborador
 }
