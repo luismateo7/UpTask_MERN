@@ -14,6 +14,7 @@ const ProyectosProvider = ({children}) =>{
     const [ tarea, setTarea ] = useState({});
     const [ modalEliminarTarea, setModalEliminarTarea] = useState(false);
     const [ alerta, setAlerta ] = useState({});
+    const [ colaborador, setColaborador ] = useState({});
 
     const token = localStorage.getItem('token');
     
@@ -72,7 +73,10 @@ const ProyectosProvider = ({children}) =>{
             const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/${id}`, config);
             setProyecto(data);
         } catch (error) {
-            console.log(error);
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
         }
         setCargando(false);
     }
@@ -176,6 +180,34 @@ const ProyectosProvider = ({children}) =>{
         }
     }
 
+    const submitInvitarColaborador = async email =>{
+        
+        setCargando(true);
+        try {
+            if(!token) return
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/colaboradores`, {email}, config);
+            
+            setColaborador(data);
+            setAlerta({})
+        } catch (error) {
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
+        } finally {
+            setCargando(false);
+        }
+    }
+
+    const agregarColaborador = async email =>{
+        try {
+            if(!token) return
+            const { data } = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/colaboradores/${proyecto.proyecto._id}`, config);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return(
         <ProyectosContext.Provider
             value={{
@@ -195,7 +227,11 @@ const ProyectosProvider = ({children}) =>{
                 modalEliminarTarea,
                 handleModalEliminarTarea,
                 eliminarTarea,
-                alerta
+                setAlerta,
+                alerta,
+                submitInvitarColaborador,
+                colaborador,
+                agregarColaborador
             }}
         >
             {children}
