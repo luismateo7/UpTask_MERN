@@ -202,9 +202,24 @@ const ProyectosProvider = ({children}) =>{
     const agregarColaborador = async email =>{
         try {
             if(!token) return
-            const { data } = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/colaboradores/${proyecto.proyecto._id}`, config);
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/colaboradores/${proyecto.proyecto._id}`, email, config);
+
+            setAlerta({
+                msg: data.msg,
+                error: false
+            })
+
+            setColaborador({});
+
+            setTimeout(()=>{
+                setAlerta({});
+            }, 2500)
+            
         } catch (error) {
-            console.log(error);
+            setAlerta({
+                msg: error.response.data.msg,
+                error: true
+            })
         }
     }
 

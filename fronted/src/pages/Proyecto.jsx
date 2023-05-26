@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom"
 import useProyectos from "../hooks/useProyectos";
 import ModalFormularioTarea from "../components/ModalFormularioTarea";
@@ -58,7 +58,7 @@ export default function Proyecto() {
                 Nueva Tarea
               </button>
 
-              <p className="font-bold text-xl mt-10">Tareas del Proyecto</p>
+              <h2 className="font-bold text-xl mt-10">Tareas del Proyecto</h2>
 
               { msg && (
                 <div className="m-auto w-full md:w-1/3 lg:w-2/4">
@@ -75,6 +75,14 @@ export default function Proyecto() {
                   />
                 )) :
                 <p className="text-center my-5 p-10">No hay tareas en este proyecto</p>}
+              </div>
+
+              <div className="flex items-center justify-between mt-10">
+                <h2 className="font-bold text-xl">Colaboradores</h2>
+                <Link
+                  to={`/proyectos/nuevo-colaborador/${proyecto.proyecto._id}`}
+                  className="text-gray-400 font-bold uppercase hover:text-black"
+                >Añadir</Link>
               </div>
 
               <ModalFormularioTarea />
