@@ -105,7 +105,7 @@ const eliminarTarea = async (req, res) => {
 const cambiarEstado = async (req, res) => {
     const { id } = req.params;
 
-    const tarea = await Tarea.findById(id).populate("proyecto");
+    const tarea = await Tarea.findById(id).populate("proyecto")
     
     if(!tarea){
         const error = new Error("La tarea no existe")
@@ -119,9 +119,14 @@ const cambiarEstado = async (req, res) => {
 
     try {
         tarea.estado = !tarea.estado;
+        tarea.completado = req.usuario._id;
         await tarea.save();
 
-        res.json(tarea)
+        const tareaAlmacenada = await Tarea.findById(id)
+            .populate("proyecto")
+            .populate("completado", "nombre");
+
+        res.json(tareaAlmacenada);
     } catch (error) {
         console.log(error)
     }
