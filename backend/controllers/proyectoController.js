@@ -4,9 +4,12 @@ import Usuario from "../models/Usuarios.js";
 
 const obtenerProyectos = async (req, res) => {
     //Obtengo los proyectos creados por ese usuario, que tiene que estar previamente autenticado
-    const proyectos = await Proyecto.find()
-        .where('creador')
-        .equals(req.usuario)
+    const proyectos = await Proyecto.find({
+        '$or': [
+            { colaboradores: { $in: req.usuario } },
+            { creador: { $in: req.usuario } }
+        ]
+    })
         .select("-tareas");  //No necesito que me carguen las tareas cuando solo pido los proyectos
 
     res.json(proyectos);
@@ -24,7 +27,7 @@ const obtenerProyecto = async (req, res) => {
         return res.status(404).json({ msg: error.message})
     }
 
-    if(proyecto.creador.toString() !== req.usuario._id.toString()){
+    if(proyecto.creador.toString() !== req.usuario._id.toString() && !proyecto.colaboradores.some( colaborador => colaborador._id.toString() === req.usuario._id.toString()) ){
         const error = new Error("No tienes los permisos para acceder a este proyecto")
         return res.status(401).json({ msg: error.message})
     }
