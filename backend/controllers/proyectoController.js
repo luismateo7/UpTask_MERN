@@ -1,5 +1,4 @@
 import Proyecto from "../models/Proyecto.js";
-import Tarea from "../models/Tarea.js"
 import Usuario from "../models/Usuarios.js";
 
 const obtenerProyectos = async (req, res) => {
@@ -19,7 +18,10 @@ const obtenerProyecto = async (req, res) => {
     const { id } = req.params; //El usuario obtiene el proyecto por el id del Proyecto si esque esta autenticado
     
     const proyecto = await Proyecto.findById(id)
-        .populate("tareas")
+        .populate({
+            path: "tareas",
+            populate: { path: "completado", select: "nombre"}
+        })
         .populate("colaboradores", "nombre email"); //Después de la coma hacemos un select
 
     if(!proyecto){
@@ -31,8 +33,6 @@ const obtenerProyecto = async (req, res) => {
         const error = new Error("No tienes los permisos para acceder a este proyecto")
         return res.status(401).json({ msg: error.message})
     }
-
-    const tareas = await Tarea.find().where("proyecto").equals(proyecto._id) //Obtener las tareas del Proyecto
     res.json(proyecto);
 }
 
