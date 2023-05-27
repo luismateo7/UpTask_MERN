@@ -17,22 +17,22 @@ export default function Tarea({tarea}) {
 
       <div className="flex gap-2 items-center">
         <button
-          className="bg-indigo-600 px-4 py-3 text-white uppercase font-bolf text-sm rounded-lg"
+          className="bg-indigo-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
           onClick={()=> handleModalEditarTarea(tarea)}
         >Editar</button>
 
         { estado ?
           ( <button
-          className="bg-sky-600 px-4 py-3 text-white uppercase font-bolf text-sm rounded-lg"
+          className="bg-sky-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
           >Editar</button> )
                 :
           ( <button
-            className="bg-gray-600 px-4 py-3 text-white uppercase font-bolf text-sm rounded-lg"
+            className="bg-gray-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
           >Incompleta</button> )
         }
 
         <button
-          className="bg-red-600 px-4 py-3 text-white uppercase font-bolf text-sm rounded-lg"
+          className="bg-red-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
           onClick={()=> handleModalEliminarTarea(tarea)}
         >Eliminar</button>
       </div>
