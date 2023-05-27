@@ -99,7 +99,28 @@ const eliminarTarea = async (req, res) => {
 }
 
 const cambiarEstado = async (req, res) => {
+    const { id } = req.params;
 
+    const tarea = await Tarea.findById(id).populate("proyecto");
+    
+    if(!tarea){
+        const error = new Error("La tarea no existe")
+        return res.status(404).json({ msg: error.message})
+    }
+
+    if(tarea.proyecto.creador.toString() !== req.usuario._id.toString() && !tarea.proyecto.colaboradores.some( colaborador => colaborador._id.toString() === req.usuario._id.toString()) ){
+        const error = new Error("No tienes los permisos para acceder a este proyecto")
+        return res.status(401).json({ msg: error.message})
+    } 
+
+    try {
+        tarea.estado = !tarea.estado;
+        await tarea.save();
+
+        res.json(tarea)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 export{
