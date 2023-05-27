@@ -18,10 +18,10 @@ export default function FormularioProyecto() {
 
     useEffect(()=>{
         if(params.id){
-            setNombre(proyecto.proyecto?.nombre);
-            setDescripcion(proyecto.proyecto?.descripcion);
-            setFechaEntrega(proyecto.proyecto?.fechaEntrega.split('T')[0]);
-            setCliente(proyecto.proyecto?.cliente);
+            setNombre(proyecto?.nombre);
+            setDescripcion(proyecto?.descripcion);
+            setFechaEntrega(proyecto?.fechaEntrega.split('T')[0]);
+            setCliente(proyecto?.cliente);
             setId(params.id);
         }
     }, [params])

@@ -203,7 +203,7 @@ const ProyectosProvider = ({children}) =>{
     const agregarColaborador = async email =>{
         try {
             if(!token) return
-            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/colaboradores/${proyecto.proyecto._id}`, email, config);
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/colaboradores/${proyecto._id}`, email, config);
 
             setAlerta({
                 msg: data.msg,
@@ -232,11 +232,11 @@ const ProyectosProvider = ({children}) =>{
     const eliminarColaborador = async () => {
         try {
             if(!token) return
-            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/eliminar-colaborador/${proyecto.proyecto._id}`, { id: colaborador._id}, config);
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/eliminar-colaborador/${proyecto._id}`, { id: colaborador._id}, config);
 
             const proyectoActualizado = {...proyecto};
 
-            proyectoActualizado.proyecto.colaboradores = proyectoActualizado.proyecto.colaboradores.filter( colaboradorState => colaboradorState._id !== colaborador._id );
+            proyectoActualizado.colaboradores = proyectoActualizado.colaboradores.filter( colaboradorState => colaboradorState._id !== colaborador._id );
 
             setProyecto(proyectoActualizado);
             

@@ -14,11 +14,11 @@ export default function NuevoColaborador() {
     obtenerProyecto(params.id)
   }, [])
 
-  if(!proyecto?.proyecto?._id) return <Alerta alerta={{msg: "Proyecto No Encontrado", error: true}} />
+  if(!proyecto?._id) return <Alerta alerta={{msg: "Proyecto No Encontrado", error: true}} />
 
   return (
     <>
-        <h1 className="text-4xl font-black">Añadir Colaborador(a) al Proyecto: {proyecto?.proyecto?.nombre}</h1>
+        <h1 className="text-4xl font-black">Añadir Colaborador(a) al Proyecto: {proyecto?.nombre}</h1>
         <div className="mt-10 flex justify-center">
             <FormularioColaborador />
         </div>

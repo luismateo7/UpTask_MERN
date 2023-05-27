@@ -31,10 +31,10 @@ export default function Proyecto() {
           ) : (
             <> 
               <div 
-                key={proyecto.proyecto?.id}
+                key={proyecto?.id}
                 className='flex justify-between'
               >
-                <h1 className="font-black text-4xl ">{proyecto.proyecto?.nombre}</h1>
+                <h1 className="font-black text-4xl ">{proyecto?.nombre}</h1>
 
                 <div className="flex items-center gap-2 text-gray-400 hover:text-black">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -82,14 +82,14 @@ export default function Proyecto() {
               <div className="flex items-center justify-between mt-10">
                 <h2 className="font-bold text-xl">Colaboradores</h2>
                 <Link
-                  to={`/proyectos/nuevo-colaborador/${proyecto.proyecto._id}`}
+                  to={`/proyectos/nuevo-colaborador/${proyecto._id}`}
                   className="text-gray-400 font-bold uppercase hover:text-black"
                 >Añadir</Link>
               </div>
 
               <div className="bg-white shadow mt-10 rounded-lg p-3">
-                {proyecto?.proyecto?.colaboradores?.length ? 
-                proyecto?.proyecto?.colaboradores?.map( colaborador => (
+                {proyecto?.colaboradores?.length ? 
+                proyecto?.colaboradores?.map( colaborador => (
                   <Colaborador
                     key={colaborador._id}
                     colaborador={colaborador}

@@ -33,8 +33,8 @@ export default function EditarProyecto() {
                 <p className="text-gray-700" disabled>Cargando...</p>
             ) : (
                 <>
-                    <div key={proyecto.proyecto?.id} className='flex justify-between'>
-                        <h1 className="font-black text-4xl ">{proyecto.proyecto?.nombre}</h1>
+                    <div key={proyecto?.id} className='flex justify-between'>
+                        <h1 className="font-black text-4xl ">{proyecto?.nombre}</h1>
                         
                         <div className="flex items-center gap-2 text-gray-400 hover:text-black">
                             
