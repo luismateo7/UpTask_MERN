@@ -15,6 +15,7 @@ const ProyectosProvider = ({children}) =>{
     const [ modalEliminarTarea, setModalEliminarTarea] = useState(false);
     const [ alerta, setAlerta ] = useState({});
     const [ colaborador, setColaborador ] = useState({});
+    const [ modalEliminarColaborador, setModalEliminarColaborador] = useState(false);
 
     const token = localStorage.getItem('token');
     
@@ -223,6 +224,34 @@ const ProyectosProvider = ({children}) =>{
         }
     }
 
+    const handleModalEliminarColaborador = colaborador => {
+        setModalEliminarColaborador(!modalEliminarColaborador);
+        setColaborador(colaborador);
+    }
+
+    const eliminarColaborador = async () => {
+        try {
+            if(!token) return
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/eliminar-colaborador/${proyecto.proyecto._id}`, { id: colaborador._id}, config);
+
+            const proyectoActualizado = {...proyecto};
+
+            proyectoActualizado.proyecto.colaboradores = proyectoActualizado.proyecto.colaboradores.filter( colaboradorState => colaboradorState._id !== colaborador._id );
+
+            setProyecto(proyectoActualizado);
+            
+            setAlerta({
+                msg: data.msg,
+                error: false
+            })
+            setColaborador({});
+            setModalEliminarColaborador(false);
+
+        } catch (error) {
+            console.log(error.response);
+        }
+    }
+
     return(
         <ProyectosContext.Provider
             value={{
@@ -246,7 +275,10 @@ const ProyectosProvider = ({children}) =>{
                 alerta,
                 submitInvitarColaborador,
                 colaborador,
-                agregarColaborador
+                agregarColaborador,
+                handleModalEliminarColaborador,
+                modalEliminarColaborador,
+                eliminarColaborador
             }}
         >
             {children}
