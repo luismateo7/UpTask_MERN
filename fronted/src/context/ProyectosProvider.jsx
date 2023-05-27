@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
 
@@ -73,6 +73,7 @@ const ProyectosProvider = ({children}) =>{
             if(!token) return
             const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos/${id}`, config);
             setProyecto(data);
+            setAlerta({});
         } catch (error) {
             setAlerta({
                 msg: error.response.data.msg,
@@ -195,6 +196,11 @@ const ProyectosProvider = ({children}) =>{
                 msg: error.response.data.msg,
                 error: true
             })
+            
+            setColaborador({});
+            setTimeout(() => {
+                setAlerta({});
+            }, 2500);
         } finally {
             setCargando(false);
         }
@@ -221,6 +227,10 @@ const ProyectosProvider = ({children}) =>{
                 msg: error.response.data.msg,
                 error: true
             })
+
+            setTimeout(() => {
+                setAlerta({});
+            }, 2500)
         }
     }
 
@@ -240,10 +250,13 @@ const ProyectosProvider = ({children}) =>{
 
             setProyecto(proyectoActualizado);
             
-            setAlerta({
-                msg: data.msg,
-                error: false
-            })
+            setTimeout(() => {
+                setAlerta({
+                    msg: data.msg,
+                    error: false
+                })
+            }, 2500);
+
             setColaborador({});
             setModalEliminarColaborador(false);
 
