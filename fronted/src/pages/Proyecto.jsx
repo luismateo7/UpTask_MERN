@@ -5,6 +5,8 @@ import ModalFormularioTarea from "../components/ModalFormularioTarea";
 import Tarea from "../components/Tarea";
 import ModalEliminarTarea from "../components/ModalEliminarTarea";
 import Alerta from "../components/Alerta";
+import Colaborador from "../components/Colaborador";
+import ModalEliminarColaborador from "../components/ModalEliminarColaborador";
 
 export default function Proyecto() {
 
@@ -85,8 +87,20 @@ export default function Proyecto() {
                 >Añadir</Link>
               </div>
 
+              <div className="bg-white shadow mt-10 rounded-lg p-3">
+                {proyecto?.proyecto?.colaboradores?.length ? 
+                proyecto?.proyecto?.colaboradores?.map( colaborador => (
+                  <Colaborador
+                    key={colaborador._id}
+                    colaborador={colaborador}
+                  />
+                )) :
+                <p className="text-center my-5 p-10">No hay tareas en este proyecto</p>}
+              </div>
+
               <ModalFormularioTarea />
               <ModalEliminarTarea />
+              <ModalEliminarColaborador />
             </>
           )}
         </div>
