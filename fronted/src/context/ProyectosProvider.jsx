@@ -265,6 +265,24 @@ const ProyectosProvider = ({children}) =>{
         }
     }
 
+    const completarTarea = async id => {
+        try {
+            if(!token) return
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/tareas/estado/${id}`, {}, config);
+
+            const proyectoActualizado = {...proyecto};
+
+            proyectoActualizado.tareas = proyectoActualizado.tareas.map(tareaState => tareaState._id === data._id ? data : tareaState)
+
+            setProyecto(proyectoActualizado);
+            setTarea({});
+            setAlerta({});
+
+        } catch (error) {
+            console.log(error.response);
+        }
+    }
+
     return(
         <ProyectosContext.Provider
             value={{
@@ -291,7 +309,8 @@ const ProyectosProvider = ({children}) =>{
                 agregarColaborador,
                 handleModalEliminarColaborador,
                 modalEliminarColaborador,
-                eliminarColaborador
+                eliminarColaborador,
+                completarTarea
             }}
         >
             {children}
