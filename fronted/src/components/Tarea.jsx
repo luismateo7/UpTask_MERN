@@ -4,7 +4,7 @@ import { formatearFecha } from "../../helpers/formatearFecha";
 export default function Tarea({tarea, admin}) {
 
   const { descripcion, nombre, prioridad, fechaEntrega, _id: id, estado} = tarea;
-  const { handleModalEditarTarea, handleModalEliminarTarea } = useProyectos();
+  const { handleModalEditarTarea, handleModalEliminarTarea, completarTarea } = useProyectos();
 
   return (
     <div className="border-b p-5 flex justify-between">
@@ -23,15 +23,10 @@ export default function Tarea({tarea, admin}) {
           >Editar</button>
         )}
 
-        { estado ?
-          ( <button
-          className="bg-sky-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
-          >Completa</button> )
-                :
-          ( <button
-            className="bg-gray-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
-          >Incompleta</button> )
-        }
+        <button
+          className={`${estado ? 'bg-sky-600' : 'bg-gray-600'} px-4 py-3 text-white uppercase font-bold text-sm rounded-lg`}
+          onClick={() => completarTarea(id)}
+        >{ estado ? 'Completa' : 'Incompleta'}</button>
 
         { admin && (
           <button
