@@ -16,6 +16,7 @@ const ProyectosProvider = ({children}) =>{
     const [ alerta, setAlerta ] = useState({});
     const [ colaborador, setColaborador ] = useState({});
     const [ modalEliminarColaborador, setModalEliminarColaborador] = useState(false);
+    const [ buscador, setBuscador ] = useState(false);
 
     const token = localStorage.getItem('token');
     
@@ -283,6 +284,10 @@ const ProyectosProvider = ({children}) =>{
         }
     }
 
+    const handleBuscador = ()=>{
+        setBuscador(!buscador);
+    }
+
     return(
         <ProyectosContext.Provider
             value={{
@@ -310,7 +315,9 @@ const ProyectosProvider = ({children}) =>{
                 handleModalEliminarColaborador,
                 modalEliminarColaborador,
                 eliminarColaborador,
-                completarTarea
+                completarTarea,
+                buscador,
+                handleBuscador
             }}
         >
             {children}
