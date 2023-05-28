@@ -4,10 +4,10 @@ import PreviewProyecto from "../components/PreviewProyecto";
 
 export default function Proyectos() {
 
-  const { proyectos, obtenerProyectos } = useProyectos();
+  const { proyectos, setProyecto } = useProyectos();
 
   useEffect(()=>{
-    obtenerProyectos()
+    setProyecto({})
   }, [])
 
   return (

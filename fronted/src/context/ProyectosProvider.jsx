@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
 
@@ -27,17 +27,21 @@ const ProyectosProvider = ({children}) =>{
         }
     }
 
-    const obtenerProyectos = async ()=>{
-        try {
-            if(!token) return
-
-            const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos`, config);
-            setProyectos(data);
-            
-        } catch (error) {
-            console.log(error)
+    useEffect(()=>{
+        const obtenerProyectos = async ()=>{
+            try {
+                if(!token) return
+    
+                const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/proyectos`, config);
+                setProyectos(data);
+                
+            } catch (error) {
+                console.log(error)
+            }
         }
-    }
+        obtenerProyectos()
+    }, [])
+
 
     const submitProyecto = async proyecto =>{
         try {
@@ -292,10 +296,10 @@ const ProyectosProvider = ({children}) =>{
         <ProyectosContext.Provider
             value={{
                 proyectos,
-                obtenerProyectos,
                 submitProyecto,
                 obtenerProyecto,
                 proyecto,
+                setProyecto,
                 cargando,
                 eliminarProyecto,
                 modalFomularioTarea,
