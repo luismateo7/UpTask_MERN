@@ -16,22 +16,22 @@ export default function Tarea({tarea, admin}) {
         { estado && <p className="text-xs bg-green-600 uppercase p-1 rounded-lg text-white">Completado  por: {tarea.completado.nombre}</p>}
       </div>
 
-      <div className="flex gap-2 items-center">
+      <div className="flex flex-col lg:flex-row gap-2 items-center">
         { admin && (
           <button
-            className="bg-indigo-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
+            className="bg-indigo-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg w-full"
             onClick={()=> handleModalEditarTarea(tarea)}
           >Editar</button>
         )}
 
         <button
-          className={`${estado ? 'bg-sky-600' : 'bg-gray-600'} px-4 py-3 text-white uppercase font-bold text-sm rounded-lg`}
+          className={`${estado ? 'bg-sky-600' : 'bg-gray-600'} px-4 py-3 text-white uppercase font-bold text-sm rounded-lg w-full`}
           onClick={() => completarTarea(id)}
         >{ estado ? 'Completa' : 'Incompleta'}</button>
 
         { admin && (
           <button
-            className="bg-red-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
+            className="bg-red-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg w-full"
             onClick={()=> handleModalEliminarTarea(tarea)}
           >Eliminar</button>
         )}

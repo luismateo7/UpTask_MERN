@@ -65,7 +65,7 @@ export default function FormularioProyecto() {
         
     return (
         <form
-            className="bg-white pt-5 pb-10 px-5 md:w-1/2 rounded-lg"
+            className="bg-white pt-5 pb-10 px-5 w-full md:w-1/2 rounded-lg"
             onSubmit={handleSubmit}
         >
 

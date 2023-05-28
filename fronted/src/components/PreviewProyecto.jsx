@@ -7,7 +7,7 @@ export default function PreviewProyecto({ proyecto }) {
     const { nombre, _id, cliente, creador } = proyecto;
 
     return (
-        <div className="border-b p-5 flex items-center justify-between">
+        <div className="border-b p-5 flex flex-col md:flex-row items-center justify-between">
 
             <div className="flex items-center gap-2">
                 <p className="flex-1">
