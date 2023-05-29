@@ -1,5 +1,6 @@
 import { useState, createContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 import axios from "axios"
 import io from "socket.io-client";
 
@@ -22,6 +23,7 @@ const ProyectosProvider = ({children}) =>{
     const [ buscador, setBuscador ] = useState(false);
 
     const token = localStorage.getItem('token');
+    const { auth } = useAuth();
     
     const config = {
         headers: {
@@ -43,7 +45,7 @@ const ProyectosProvider = ({children}) =>{
             }
         }
         obtenerProyectos()
-    }, [])
+    }, [auth])
 
     useEffect(() => {
         socket = io(import.meta.env.VITE_BACKEND_URL)
