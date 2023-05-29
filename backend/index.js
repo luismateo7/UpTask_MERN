@@ -14,7 +14,7 @@ dotenv.config()
 conectarDB()
 
 //Configurar CORS
-const whiteList = [process.env.FRONTED_URL, "http://localhost:5173"]; //Fronted permitidos
+const whiteList = [process.env.FRONTED_URL]; //Fronted permitidos
 
 const corsOption = {
     origin: function(origin, callback){ //El origin detecta que fronted esta realizando la peticion
@@ -36,6 +36,44 @@ app.use('/api/tareas', tareaRoutes)
 
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, ()=>{
+const servidor = app.listen(PORT, ()=>{
     console.log('Desde Index')
+})
+
+// Socket.io
+import { Server } from "socket.io"
+
+const io = new Server(servidor, {
+    pingTimeout: 60000,
+    cors: {
+        origin: process.env.FRONTED_URL
+    }
+})
+
+io.on('connection', (socket) => {
+
+    //Definir los eventos de socket io
+    socket.on('abrir proyecto', (proyecto)=>{
+        socket.join(proyecto)
+    })
+
+    socket.on('nueva tarea', tarea => {
+        const proyecto = tarea.proyecto;
+        socket.to(proyecto).emit('tarea agregada', tarea);
+    })
+
+    socket.on('eliminar tarea', tarea => {
+        const proyecto = tarea.proyecto
+        socket.to(proyecto).emit('tarea eliminada', tarea)
+    })
+
+    socket.on('actualizar tarea', tarea => {
+        const proyecto = tarea.proyecto._id
+        socket.to(proyecto).emit('tarea actualizada', tarea)
+    })
+
+    socket.on('cambiar estado tarea', tarea => {
+        const proyecto = tarea.proyecto._id
+        socket.to(proyecto).emit('tarea estado actualizado', tarea)
+    })
 })

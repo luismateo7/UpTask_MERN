@@ -1,6 +1,9 @@
 import { useState, createContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
+import io from "socket.io-client";
+
+let socket;
 
 const ProyectosContext = createContext();
 
@@ -42,6 +45,9 @@ const ProyectosProvider = ({children}) =>{
         obtenerProyectos()
     }, [])
 
+    useEffect(() => {
+        socket = io(import.meta.env.VITE_BACKEND_URL)
+    }, [])
 
     const submitProyecto = async proyecto =>{
         try {
@@ -124,6 +130,9 @@ const ProyectosProvider = ({children}) =>{
                 setProyecto(proyectoActualizado)
     
                 setmodalFomularioTarea(false) //Cerrar el formulario cuando añado la tarea
+
+                //Socket IO
+                socket.emit('nueva tarea', data)
     
             } catch (error) {
                 console.log(error);
@@ -147,6 +156,10 @@ const ProyectosProvider = ({children}) =>{
                 setProyecto(proyectoActualizado);
 
                 setmodalFomularioTarea(false);
+
+                // Socket IO
+                socket.emit('actualizar tarea', data);
+
             } catch (error) {
                 console.log(error);
             }
@@ -176,6 +189,9 @@ const ProyectosProvider = ({children}) =>{
             const proyectoActualizado = { ...proyecto};
             proyectoActualizado.tareas = proyectoActualizado.tareas.filter( tareaState => tareaState._id !== tarea._id )
             setProyecto(proyectoActualizado);
+            
+            //Socket IO
+            socket.emit('eliminar tarea', tarea)
 
             setTimeout(()=>{
                 setAlerta({});
@@ -283,6 +299,9 @@ const ProyectosProvider = ({children}) =>{
             setTarea({});
             setAlerta({});
 
+            // Socket Io
+            socket.emit('cambiar estado tarea', data);
+
         } catch (error) {
             console.log(error.response);
         }
@@ -290,6 +309,41 @@ const ProyectosProvider = ({children}) =>{
 
     const handleBuscador = ()=>{
         setBuscador(!buscador);
+    }
+
+    // SOCKET IO
+    const submitTareasProyecto = tarea => {
+        const proyectoActualizado = { ...proyecto }
+        proyectoActualizado.tareas = [ ...proyectoActualizado.tareas, tarea]
+        setProyecto(proyectoActualizado)
+    }
+
+    const eliminarTareaProyecto = tarea => {
+        const proyectoActualizado = { ...proyecto};
+        proyectoActualizado.tareas = proyectoActualizado.tareas.filter( tareaState => tareaState._id !== tarea._id )
+        setProyecto(proyectoActualizado);
+    }
+
+    const actualizarTareaProyecto = tarea => {
+        const proyectoActualizado = { ...proyecto};
+        proyectoActualizado.tareas = proyectoActualizado.tareas.map( tareaState => {
+            if(tareaState._id === tarea._id){
+                tareaState = tarea
+            }
+            return tareaState
+        })
+        setProyecto(proyectoActualizado);
+    }
+
+    const completarTareaProyecto = tarea => {
+        const proyectoActualizado = { ...proyecto};
+        proyectoActualizado.tareas = proyectoActualizado.tareas.map( tareaState => {
+            if(tareaState._id === tarea._id){
+                tareaState = tarea
+            }
+            return tareaState
+        })
+        setProyecto(proyectoActualizado);
     }
 
     return(
@@ -321,7 +375,11 @@ const ProyectosProvider = ({children}) =>{
                 eliminarColaborador,
                 completarTarea,
                 buscador,
-                handleBuscador
+                handleBuscador,
+                submitTareasProyecto,
+                eliminarTareaProyecto,
+                actualizarTareaProyecto,
+                completarTareaProyecto
             }}
         >
             {children}

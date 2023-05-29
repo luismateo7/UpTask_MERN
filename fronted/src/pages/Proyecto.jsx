@@ -12,16 +12,58 @@ import Tarea from "../components/Tarea";
 import Alerta from "../components/Alerta";
 import Colaborador from "../components/Colaborador";
 
+import io from "socket.io-client";
+let socket;
+
 export default function Proyecto() {
 
     const params = useParams();
-    const { obtenerProyecto, proyecto, cargando, handleModalTarea, setTarea, alerta } = useProyectos();
+    const { obtenerProyecto, proyecto, cargando, handleModalTarea, setTarea, alerta, submitTareasProyecto, eliminarTareaProyecto, actualizarTareaProyecto, completarTareaProyecto } = useProyectos();
 
     const admin = useAdmin();
     
     useEffect(()=>{
         obtenerProyecto(params.id);
     }, [])
+
+    useEffect(()=>{
+      socket = io(import.meta.env.VITE_BACKEND_URL);
+      socket.emit('abrir proyecto', params.id);
+
+      return ()=>{
+        socket.disconnect()
+      }
+    }, [])
+
+    useEffect(()=>{
+      if(!proyecto.nombre) return
+
+      socket.on("tarea agregada", tareaNueva => {
+        const tareaExistente = proyecto.tareas.find(tareaState => tareaState._id === tareaNueva._id);
+        if (!tareaExistente) {
+          submitTareasProyecto(tareaNueva);
+        }
+      });
+
+      socket.on("tarea eliminada", tareaEliminada => {          eliminarTareaProyecto(tareaEliminada);
+      });
+
+      socket.on("tarea actualizada", tareaActualizada => {
+        actualizarTareaProyecto(tareaActualizada);
+      });
+
+      socket.on("tarea estado actualizado", nuevoEstadoTarea => {
+        completarTareaProyecto(nuevoEstadoTarea);
+      });
+
+      return ()=> {
+        socket.off('tarea agregada');
+        socket.off('tarea actualizada');
+        socket.off('tarea eliminada');
+        socket.off('tarea estado actualizado');
+      }
+
+    })
 
     const handleNuevaTarea = ()=>{
       setTarea({});
